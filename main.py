@@ -49,6 +49,7 @@ def check_unfollowers(func):
 
                 if following:
                     kwargs['follower_id'] = follower_id
+                    remove_follower_id(follower_id)
                     break
 
                 pass
@@ -71,6 +72,18 @@ def retrieve_follower_ids():
 
     # Return the follower IDs as a list
     return [follower_id[0] for follower_id in follower_ids]
+
+def remove_follower_id(follower_id):
+    # Connect to the SQLite database
+    conn = sqlite3.connect('followers.db')
+    cursor = conn.cursor()
+
+    # Delete the follower_id from the table
+    cursor.execute("DELETE FROM followers WHERE id=?", (follower_id,))
+
+    # Commit the changes and close the connection
+    conn.commit()
+    conn.close()
 
 # - Store IDs in db
 # - Check if the IDs in the Db are found in followers
