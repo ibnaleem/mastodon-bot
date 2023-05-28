@@ -6,6 +6,24 @@ with open("config.json", "r") as f:
 
 client = Mastodon(access_token = str(token["token"]), api_base_url="https://mastodon.social/")
 
+def check_followers(func):
+    def wrapper(self, *args, **kwargs):
+        # Fetch notifications for the logged-in user
+        notifications = self.client.notifications()
+
+        # Iterate through the notifications to check for follow events
+        for notification in notifications:
+            if notification['type'] == 'follow':
+                # User has followed you
+                follower_id = notification['account']['id']
+                kwargs['follower_id'] = follower_id
+                break
+
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+
 class MyClient:
     def __init__(self, client):
         self.client = client
@@ -14,24 +32,7 @@ class MyClient:
         if self.preferences():
             print("LOGGED INTO MASTODON")
         else:
-            print("FAILED TO LOGIN TO MASTODON")
-    
-    def check_followers(self, func):
-        def wrapper(self, *args, **kwargs):
-            # Fetch notifications for the logged-in user
-            notifications = self.notifications()
-
-            # Iterate through the notifications to check for follow events
-            for notification in notifications:
-                if notification['type'] == 'follow':
-                    # User has followed bot
-                    follower_id = notification['account']['id']
-                    kwargs['follower_id'] = follower_id
-                    break
-
-            return func(self, *args, **kwargs)
-
-        return wrapper
+            print("FAILED TO LOGIN TO MASTODON") 
     
     @check_followers
     def follow(self, follower_id=None):
