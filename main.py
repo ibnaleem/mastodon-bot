@@ -18,6 +18,7 @@ def check_followers(func):
                 # User has followed you
                 follower_id = notification['account']['id']
                 kwargs['follower_id'] = follower_id
+                store_follower_id(follower_id=follower_id)
                 break
 
         return func(self, *args, **kwargs)
@@ -87,17 +88,13 @@ def remove_follower_id(follower_id):
     conn.commit()
     conn.close()
 
-# - Store IDs in db
-# - Check if the IDs in the Db are found in followers
-# - Not found? Check following if ID is there
-# - Found? Unfollow, else return
-
 class MyClient:
     def __init__(self, client):
         self.client = client
     
-    def login_check(self):
-        if self.preferences():
+    @staticmethod
+    def login_check():
+        if client.preferences():
             print("LOGGED INTO MASTODON")
         else:
             print("FAILED TO LOGIN TO MASTODON") 
