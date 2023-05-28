@@ -38,8 +38,8 @@ def store_follower_id(follower_id):
 
 def check_unfollowers(func):
     def wrapper(self, *args, **kwargs):
-        try:
-            follower_ids = retrieve_follower_ids()
+        follower_ids = retrieve_follower_ids()
+        if follower_ids:
             for follower_id in follower_ids:
                 follower = self.account_followers(follower_id)
                 if not follower:
@@ -50,8 +50,7 @@ def check_unfollowers(func):
                         remove_follower_id(follower_id)
                         break
                     pass
-
-        except sqlite3.OperationalError:
+        else:
             pass
 
         return func(self, *args, **kwargs)
