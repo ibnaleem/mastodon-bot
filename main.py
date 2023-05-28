@@ -17,9 +17,9 @@ class MyClient:
             print("FAILED TO LOGIN TO MASTODON")
     
     def check_followers(self, func):
-        def wrapper(*args, **kwargs):
+        def wrapper(self, *args, **kwargs):
             # Fetch notifications for the logged-in user
-            notifications = self.client.notifications()
+            notifications = self.notifications()
 
             # Iterate through the notifications to check for follow events
             for notification in notifications:
@@ -29,7 +29,7 @@ class MyClient:
                     kwargs['follower_id'] = follower_id
                     break
 
-            return func(*args, **kwargs)
+            return func(self, *args, **kwargs)
 
         return wrapper
     
