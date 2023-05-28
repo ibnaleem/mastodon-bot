@@ -43,19 +43,21 @@ def store_follower_id(follower_id):
 
 def check_unfollowers(func):
     def wrapper(self, *args, **kwargs):
+        try:
+            follower_ids = retrieve_follower_ids()
+            for follower_id in follower_ids:
+                follower = self.account_followers(follower_id)
+                if not follower:
+                    following = self.account_following(follower_id)
 
-        follower_ids = retrieve_follower_ids()
-        for follower_id in follower_ids:
-            follower = self.account_followers(follower_id)
-            if not follower:
-                following = self.account_following(follower_id)
-
-                if following:
-                    kwargs['follower_id'] = follower_id
-                    remove_follower_id(follower_id)
-                    break
-
-                pass
+                    if following:
+                        kwargs['follower_id'] = follower_id
+                        remove_follower_id(follower_id)
+                        break
+                    pass
+                
+        except sqlite3.OperationalError:
+            print("THERE ARE NO FOLLOWERS")
 
         return func(self, *args, **kwargs)
 
