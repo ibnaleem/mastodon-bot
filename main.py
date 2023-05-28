@@ -4,7 +4,6 @@ from mastodon import Mastodon
 with open("config.json", "r") as f:
     token = json.load(f)
 
-client = Mastodon(access_token = str(token["token"]), api_base_url="https://mastodon.social/")
 
 def check_followers(func):
     def wrapper(self, *args, **kwargs):
@@ -42,5 +41,8 @@ class MyClient:
 
 
 if __name__ == "__main__":
+    client = Mastodon(access_token = str(token["token"]), api_base_url="https://mastodon.social/")
     MyClient.login_check(client)
-    MyClient.follow(client)
+
+    while True:
+        MyClient.follow(client)
