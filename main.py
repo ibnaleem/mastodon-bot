@@ -19,19 +19,27 @@ class MyClient:
     def check_followers(self, func):
         def wrapper(*args, **kwargs):
             # Fetch notifications for the logged-in user
-            notifications = self.notifications()
+            notifications = self.client.notifications()
 
             # Iterate through the notifications to check for follow events
             for notification in notifications:
                 if notification['type'] == 'follow':
-                    # User has followed you
+                    # User has followed bot
                     follower_id = notification['account']['id']
-                    follower_username = notification['account']['username']
-                    func(follower_id, follower_username, *args, **kwargs)
+                    kwargs['follower_id'] = follower_id
                     break
 
+            return func(*args, **kwargs)
+
         return wrapper
+    
+    @check_followers
+    def follow(self, follower_id=None):
+        while follower_id:
+            self.account_follow(id=follower_id)
+            follower_id = None 
 
 
 if __name__ == "__main__":
     MyClient.login_check(client)
+    MyClient.follow(client)
