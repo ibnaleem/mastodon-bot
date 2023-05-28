@@ -35,7 +35,7 @@ def store_follower_id(follower_id):
                       (id INTEGER PRIMARY KEY)''')
 
     # Insert the follower_id into the table
-    cursor.execute("INSERT INTO followers (id) VALUES (?)", (follower_id,))
+    cursor.execute("INSERT OR IGNORE INTO followers (id) VALUES (?)", (follower_id,))
 
     # Commit the changes and close the connection
     conn.commit()
