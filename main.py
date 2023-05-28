@@ -25,7 +25,7 @@ def check_followers(func):
 
 def check_unfollowers(func):
     def wrapper(self, *args, **kwargs):
-        following_list = self.account_following()
+        following_list = self.account_following(self.me())
         followers_set = set(follower["id"] for follower in self.account_followers())
 
         for following in following_list:
