@@ -113,7 +113,7 @@ class MyClient:
 
 
 if __name__ == "__main__":
-    MyClient.login_check(client)
+    MyClient.login_check()
 
     while True:
         MyClient.follow(client)
