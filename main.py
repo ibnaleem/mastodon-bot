@@ -16,12 +16,16 @@ def check_followers(func):
                 # User has followed you
                 follower_id = notification['account']['id']
                 kwargs['follower_id'] = follower_id
+                with open("followers.txt", "w") as f:
+                    f.write(f"{follower_id}\n")
+                    f.close()
                 break
 
         return func(self, *args, **kwargs)
 
     return wrapper
 
+# CHECK IF THE FOLLOWER_IDs IN THE FOLLOWERS.TXT IS IN THE FOLLOWERS OF ACCOUNT, IF NOT, UNFOLLOW THAT ACCOUNT
 
 class MyClient:
     def __init__(self, client):
