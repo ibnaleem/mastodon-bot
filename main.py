@@ -55,9 +55,9 @@ def check_unfollowers(func):
                         remove_follower_id(follower_id)
                         break
                     pass
-                
+
         except sqlite3.OperationalError:
-            print("THERE ARE NO FOLLOWERS")
+            pass
 
         return func(self, *args, **kwargs)
 
