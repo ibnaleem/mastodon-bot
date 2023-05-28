@@ -9,7 +9,7 @@ client = Mastodon(access_token = str(token["token"]), api_base_url="https://mast
 def check_followers(func):
     def wrapper(self, *args, **kwargs):
         # Fetch notifications for the logged-in user
-        notifications = self.client.notifications()
+        notifications = self.notifications()
 
         # Iterate through the notifications to check for follow events
         for notification in notifications:
