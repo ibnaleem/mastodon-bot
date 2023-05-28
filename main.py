@@ -1,11 +1,15 @@
-import json, sqlite3
+import json
 from mastodon import Mastodon
+from pymongo import MongoClient
+from pymongo.server_api import ServerApi
 
 with open("config.json", "r") as f:
-    token = json.load(f)
+    config = json.load(f)
 
-client = Mastodon(access_token = str(token["token"]), api_base_url="https://mastodon.social/")
-
+client = Mastodon(access_token = str(config["token"]), api_base_url="https://mastodon.social/")
+mongoClient = MongoClient(str(config["uri"]), server_api=ServerApi('1'))
+db = mongoClient.mastodon_db
+followers_collection = db.followers
 
 def check_followers(func):
     def wrapper(self, *args, **kwargs):
@@ -26,20 +30,11 @@ def check_followers(func):
     return wrapper
 
 def store_follower_id(follower_id):
-    # Connect to the SQLite database
-    conn = sqlite3.connect('followers.db')
-    cursor = conn.cursor()
+    doc = followers_collection.find_one({"account": int(follower_id)})
 
-    # Create a table if it doesn't exist
-    cursor.execute('''CREATE TABLE IF NOT EXISTS followers
-                      (id INTEGER PRIMARY KEY)''')
-
-    # Insert the follower_id into the table
-    cursor.execute("INSERT OR IGNORE INTO followers (id) VALUES (?)", (follower_id,))
-
-    # Commit the changes and close the connection
-    conn.commit()
-    conn.close()
+    if doc is None:
+        followers_collection.insert_one({"account": int(follower_id)})
+    pass
 
 def check_unfollowers(func):
     def wrapper(self, *args, **kwargs):
@@ -64,31 +59,18 @@ def check_unfollowers(func):
     return wrapper
 
 def retrieve_follower_ids():
-    # Connect to the SQLite database
-    conn = sqlite3.connect('followers.db')
-    cursor = conn.cursor()
+    cursor = followers_collection.find({}, {"account": 1})
+    
+    ids = [doc["account"] for doc in cursor]
+    return ids
 
-    # Retrieve all follower IDs from the table
-    cursor.execute("SELECT id FROM followers")
-    follower_ids = cursor.fetchall()
-
-    # Close the connection
-    conn.close()
-
-    # Return the follower IDs as a list
-    return [follower_id[0] for follower_id in follower_ids]
 
 def remove_follower_id(follower_id):
-    # Connect to the SQLite database
-    conn = sqlite3.connect('followers.db')
-    cursor = conn.cursor()
+    doc = followers_collection.find_one({"account": int(follower_id)})
 
-    # Delete the follower_id from the table
-    cursor.execute("DELETE FROM followers WHERE id=?", (follower_id,))
-
-    # Commit the changes and close the connection
-    conn.commit()
-    conn.close()
+    if doc is not None:
+        followers_collection.delete_one({"account": int(follower_id)})
+    pass
 
 class MyClient:
     def __init__(self, client):
