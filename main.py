@@ -1,4 +1,4 @@
-import json
+import json, asyncio, datetime
 from mastodon import Mastodon
 
 with open("config.json", "r") as f:
@@ -33,6 +33,16 @@ def check_unfollowers(func):
                 kwargs['following_id'] = following["id"]
                 break
             pass
+
+        return func(self, *args, **kwargs)
+
+    return wrapper
+
+def check_trending_hashtags(func):
+    def wrapper(self, *args, **kwargs):
+        hashtags = self.trending_hashtags()
+        kwargs["name"] = '\n'.join(f"#{hashtag['name']}" for hashtag in hashtags)
+        kwargs["history"] = hashtags["history"]
 
         return func(self, *args, **kwargs)
 
