@@ -44,7 +44,7 @@ def check_trending_hashtags(func):
         hashtags = self.trending_tags()
         messages = []
         unique_names = set()
-        total_length = 0
+        total_length = len("Trending Hashtags:\n")
 
         for tag in hashtags:
             name = tag["name"]
@@ -60,9 +60,9 @@ def check_trending_hashtags(func):
                 accounts = entry["accounts"]
                 message = f"#{name} {uses} uses on {date} from {accounts} accounts"
                 
-                if total_length + len(message) <= 500:
+                if total_length + len(message) + 1 <= 500:  # Add 1 for the newline character
                     messages.append(message)
-                    total_length += len(message)
+                    total_length += len(message) + 1
 
         kwargs["message"] = "Trending Hashtags:\n" + "\n".join(messages)
         return func(self, *args, **kwargs)
