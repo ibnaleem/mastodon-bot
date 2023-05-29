@@ -44,7 +44,7 @@ def check_trending_hashtags(func):
         names = hashtags["name"]
         histories = hashtags["history"]
         for name, history in zip(names, histories):
-            kwargs["message"] = f"#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
+            args["message"] = f"#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
 
         return func(self, *args, **kwargs)
 
@@ -74,7 +74,9 @@ class MyClient:
             following_id = None
 
     @check_trending_hashtags
-    def toot_hashtags(self, names, histories):
+    def toot_hashtags(self, message):
+        self.toot(message)
+        asyncio.sleep(3600)
 
 
 
