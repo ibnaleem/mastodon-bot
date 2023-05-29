@@ -38,14 +38,24 @@ def check_unfollowers(func):
 
     return wrapper
 
+
 def check_trending_hashtags(func):
     def wrapper(self, *args, **kwargs):
         hashtags = self.trending_tags()
-        names = hashtags["name"]
-        histories = hashtags["history"]
-        for name, history in zip(names, histories):
-            kwargs["message"] = f"Trending Hastags:\n#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
+        messages = []
 
+        for tag in hashtags:
+            name = tag["name"]
+            history = tag["history"]
+            
+            for entry in history:
+                uses = entry["uses"]
+                date = entry["day"]
+                accounts = entry["accounts"]
+                message = f"Trending Hashtags:\n#{name} {uses} uses on {date} from {accounts} accounts"
+                messages.append(message)
+
+        kwargs["message"] = "\n".join(messages)
         return func(self, *args, **kwargs)
 
     return wrapper
@@ -77,12 +87,11 @@ class MyClient:
     def toot_hashtags(self, message=None):
         if message:
             self.toot(message)
-            asyncio.sleep(3600)
 
 if __name__ == "__main__":
     MyClient.login_check()
+    MyClient.toot_hashtags(client)
 
     while True:
         MyClient.follow(client)
         MyClient.unfollow(client)
-        MyClient.toot_hashtags(client)
