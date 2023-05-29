@@ -55,7 +55,7 @@ def check_trending_hashtags(func):
             
             for entry in history:
                 uses = entry["uses"]
-                date = entry["day"].split("T")[0]  # Extract the date part and split at "T"
+                date = entry["day"].strftime("%Y-%m-%d")
                 accounts = entry["accounts"]
                 message = f"#{name} {uses} uses on {date} from {accounts} accounts"
                 messages.append(message)
