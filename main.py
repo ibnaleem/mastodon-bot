@@ -41,8 +41,10 @@ def check_unfollowers(func):
 def check_trending_hashtags(func):
     def wrapper(self, *args, **kwargs):
         hashtags = self.trending_hashtags()
-        kwargs["name"] = hashtags["name"]
-        kwargs["history"] = hashtags["history"]
+        names = hashtags["name"]
+        histories = hashtags["history"]
+        for name, history in zip(names, histories):
+            kwargs["message"] = f"#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
 
         return func(self, *args, **kwargs)
 
@@ -72,7 +74,10 @@ class MyClient:
             following_id = None
 
     @check_trending_hashtags
-    def toot_hashtags(self, name, history):
+    def toot_hashtags(self, names, histories):
+
+
+
         
 
 
