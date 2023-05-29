@@ -73,7 +73,7 @@ class MyClient:
 
     @check_trending_hashtags
     def toot_hashtags(self, name, history):
-
+        
 
 
 if __name__ == "__main__":
