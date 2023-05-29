@@ -40,11 +40,11 @@ def check_unfollowers(func):
 
 def check_trending_hashtags(func):
     def wrapper(self, *args, **kwargs):
-        hashtags = self.trending_hashtags()
+        hashtags = self.trending_tags()
         names = hashtags["name"]
         histories = hashtags["history"]
         for name, history in zip(names, histories):
-            kwargs["message"] = f"#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
+            kwargs["message"] = f"Trending Hastags:\n#{name} {history['uses']} uses on {history['date']} from {history['accounts']} accounts"
 
         return func(self, *args, **kwargs)
 
