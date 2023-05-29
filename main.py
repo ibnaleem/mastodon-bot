@@ -43,19 +43,24 @@ def check_trending_hashtags(func):
     def wrapper(self, *args, **kwargs):
         hashtags = self.trending_tags()
         messages = []
+        unique_names = set()
 
         for tag in hashtags:
             name = tag["name"]
+            if name in unique_names:
+                continue  # Skip if the name has already been recorded
+            unique_names.add(name)
+
             history = tag["history"]
             
             for entry in history:
                 uses = entry["uses"]
-                date = entry["day"]
+                date = entry["day"].split("T")[0]  # Extract the date part and split at "T"
                 accounts = entry["accounts"]
-                message = f"Trending Hashtags:\n#{name} {uses} uses on {date} from {accounts} accounts"
+                message = f"#{name} {uses} uses on {date} from {accounts} accounts"
                 messages.append(message)
 
-        kwargs["message"] = "\n".join(messages)
+        kwargs["message"] = "Trending Hashtags:\n" + "\n".join(messages[:len(messages) // 2])
         return func(self, *args, **kwargs)
 
     return wrapper
