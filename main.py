@@ -41,7 +41,7 @@ def check_unfollowers(func):
 def check_trending_hashtags(func):
     def wrapper(self, *args, **kwargs):
         hashtags = self.trending_hashtags()
-        kwargs["name"] = '\n'.join(f"#{hashtag['name']}" for hashtag in hashtags)
+        kwargs["name"] = hashtags["name"]
         kwargs["history"] = hashtags["history"]
 
         return func(self, *args, **kwargs)
@@ -69,7 +69,11 @@ class MyClient:
     def unfollow(self, following_id=None):
         while following_id:
             self.account_unfollow(id=following_id)
-            following_id = None 
+            following_id = None
+
+    @check_trending_hashtags
+    def toot_hashtags(self, name, history):
+
 
 
 if __name__ == "__main__":
