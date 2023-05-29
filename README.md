@@ -11,5 +11,5 @@
 ## Features:
 - Follow-for-Follow: Follow [the bot](https://mastodon.social/@ibnaleem) for a follow back!
 - Mention Repost (*coming soon*): Mention [the bot](https://mastodon.social/@ibnaleem) for reposts (just like [Twitter RT bots](https://thenextweb.com/news/12-weird-and-wonderful-twitter-retweet-bots))
-- Trending (hash)tags: Lists the top trending (hash)tags on Mastodon with their number of usage and how many accounts have used them during a specific date.  
+- Trending (hash)tags: Lists the top trending (hash)tags on Mastodon with their number of usage and how many accounts have used them during a specific date ([see here](https://mastodon.social/@ibnaleem/110452236512537375)).  
 - *suggest more*
