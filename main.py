@@ -58,9 +58,12 @@ def check_trending_hashtags(func):
                 date = entry["day"].strftime("%Y-%m-%d")
                 accounts = entry["accounts"]
                 message = f"#{name} {uses} uses on {date} from {accounts} accounts"
-                messages.append(message)
+                
+                if total_length + len(message) <= 500:
+                    messages.append(message)
+                    total_length += len(message)
 
-        kwargs["message"] = "Trending Hashtags:\n" + "\n".join(messages[:len(messages) // 2])
+        kwargs["message"] = "Trending Hashtags:\n" + "\n".join(messages)
         return func(self, *args, **kwargs)
 
     return wrapper
