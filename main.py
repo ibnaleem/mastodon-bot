@@ -44,6 +44,7 @@ def check_trending_hashtags(func):
         hashtags = self.trending_tags()
         messages = []
         unique_names = set()
+        total_length = 0
 
         for tag in hashtags:
             name = tag["name"]
